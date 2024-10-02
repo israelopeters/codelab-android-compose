@@ -26,19 +26,31 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -157,7 +169,7 @@ fun AlignYourBodyRow(
     // Implement composable here
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp), // Prevents the content from being at both edges
+        contentPadding = PaddingValues(horizontal = 16.dp), // Prevents the content from being clipped at both edges
         modifier = modifier.padding(vertical = 8.dp),
     ) {
         items(alignYourBodyData) { item ->
@@ -175,26 +187,76 @@ fun FavoriteCollectionsGrid(
     modifier: Modifier = Modifier
 ) {
     // Implement composable here
+    LazyHorizontalGrid(
+        rows = GridCells.Fixed(2),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp), // Prevents the content from being clipped at both edges
+        modifier = modifier.height(168.dp)
+    ) {
+        items(favoriteCollectionsData) { item ->
+            FavoriteCollectionCard(
+                drawable = item.drawable,
+                text = item.text,
+                modifier = Modifier.height(80.dp)
+            )
+        }
+        
+    }
 }
 
 // Step: Home section - Slot APIs
 @Composable
 fun HomeSection(
-    modifier: Modifier = Modifier
+    @StringRes title: Int,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
 ) {
     // Implement composable here
+    Column(modifier = modifier) {
+        Text(
+            text = stringResource(id = title),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .paddingFromBaseline(top = 40.dp, bottom = 16.dp)
+        )
+        content()
+    }
+
 }
 
 // Step: Home screen - Scrolling
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
     // Implement composable here
+    Column(modifier = modifier.verticalScroll(rememberScrollState())) {
+        // .verticalScroll(rememberScrollState()) helps to make the composable scrollable
+        // when the screen height is too small; useful for screen rotations or small screens
+
+        Spacer(Modifier.height(16.dp))
+
+        SearchBar(Modifier.padding(horizontal = 16.dp))
+
+        HomeSection(
+            title = R.string.align_your_body,
+            content = { AlignYourBodyRow() }
+        )
+        HomeSection(
+            title = R.string.favorite_collections,
+            content = { FavoriteCollectionsGrid() }
+        )
+        SootheBottomNavigation()
+
+        Spacer(Modifier.height(16.dp))
+    }
 }
 
 // Step: Bottom navigation - Material
 @Composable
 private fun SootheBottomNavigation(modifier: Modifier = Modifier) {
     // Implement composable here
+
 }
 
 // Step: MySoothe App - Scaffold
@@ -289,7 +351,12 @@ fun AlignYourBodyRowPreview() {
 @Preview(showBackground = true, backgroundColor = 0xFFF5F0EE)
 @Composable
 fun HomeSectionPreview() {
-    MySootheTheme { HomeSection() }
+    MySootheTheme {
+        HomeSection(
+            R.string.align_your_body,
+            content = {AlignYourBodyRow()}
+        )
+    }
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFFF5F0EE)
