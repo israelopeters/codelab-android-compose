@@ -256,7 +256,33 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun SootheBottomNavigation(modifier: Modifier = Modifier) {
     // Implement composable here
-
+    NavigationBar(
+        modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.surfaceVariant
+    ) {
+        NavigationBarItem(
+            selected = true,
+            onClick = { /*TODO*/ },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Home,
+                    contentDescription = null
+                )
+            },
+            label = { Text(stringResource(id = R.string.bottom_navigation_home)) }
+        )
+        NavigationBarItem(
+            selected = true,
+            onClick = { /*TODO*/ },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = null
+                )
+            },
+            label = { Text(stringResource(id = R.string.bottom_navigation_profile)) }
+        )
+    }
 }
 
 // Step: MySoothe App - Scaffold
